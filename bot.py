@@ -40,16 +40,20 @@ async def handle_join_request(update: Update, context: ContextTypes.DEFAULT_TYPE
                 chat_id=user_chat_id,
                 text=WELCOME_MESSAGE
             )
-        
-        # Hum yahan se await request.approve() hata chuke hain
-        # taaki request pending rahe aur sirf message jaye.
-
     except Exception as e:
         print(f"Error: {e}")
 
-if __name__ == '__main__':
+def main():
+    # Flask server ko background thread mein start karna
     threading.Thread(target=run_web, daemon=True).start()
+    
+    # Telegram Bot application build karna
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(ChatJoinRequestHandler(handle_join_request))
+    
     print("Bot Free Hosting Par Start Ho Gaya!")
-    app.run_polling()
+    # Bot polling start karna
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
+
+if __name__ == '__main__':
+    main()
