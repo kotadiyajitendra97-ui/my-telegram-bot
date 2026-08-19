@@ -1,4 +1,5 @@
-import os
+    # Agar admin khud message bhej raha hai, toh forward mat karo
+    import os
 import threading
 from flask import Flask
 from telegram import Update
@@ -116,6 +117,57 @@ async def handle_join_request(update: Update, context: ContextTypes.DEFAULT_TYPE
     try:
         if VIDEO_FILE_ID and VIDEO_FILE_ID != "YOUR_VIDEO_FILE_ID_HERE":
             await context.bot.send_video(
+import os
+import threading
+from flask import Flask
+from telegram import Update
+from telegram.ext import ApplicationBuilder, ChatJoinRequestHandler, CommandHandler, MessageHandler, filters, ContextTypes
+
+app_web = Flask(__name__)
+
+@app_web.route('/')
+def home():
+    return "Bot is running fine!"
+
+def run_web():
+    port = int(os.environ.get("PORT", 8080))
+    app_web.run(host="0.0.0.0", port=port)
+
+BOT_TOKEN = "8845506695:AAHCLbvbgkgLxsHYHuDidF2xk0HP3qI-n7I"
+VIDEO_FILE_ID = "YOUR_VIDEO_FILE_ID_HERE"
+
+ADMIN_ID = 6802793034
+
+WELCOME_MESSAGE = """***Link 1
+https://t.me/+561zT9_l49k3NjE1
+https://t.me/+561zT9_l49k3NjE1
+Link 2
+https://t.me/+K5XjyxDE9Ts0MGVl
+https://t.me/+K5XjyxDE9Ts0MGVl***"""
+
+def save_user(chat_id):
+    try:
+        if not os.path.exists("users.txt"):
+            with open("users.txt", "w") as f:
+                f.write("")
+        
+        with open("users.txt", "r") as f:
+            users = f.read().splitlines()
+        
+        if str(chat_id) not in users:
+            with open("users.txt", "a") as f:
+                f.write(str(chat_id) + "\n")
+    except Exception as e:
+        print(f"Error saving user: {e}")
+
+async def handle_join_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    request = update.chat_join_request
+    user_chat_id = request.user_chat_id
+    save_user(user_chat_id)
+    
+    try:
+        if VIDEO_FILE_ID and VIDEO_FILE_ID != "YOUR_VIDEO_FILE_ID_HERE":
+            await context.bot.send_video(
                 chat_id=user_chat_id,
                 video=VIDEO_FILE_ID,
                 caption=WELCOME_MESSAGE
@@ -128,7 +180,6 @@ async def handle_join_request(update: Update, context: ContextTypes.DEFAULT_TYPE
     except Exception as e:
         print(f"Error: {e}")
 
-# User ke messages ko admin ke paas forward karne ka function
 async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
     if not message or not message.from_user:
@@ -137,10 +188,8 @@ async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = message.from_user
     user_chat_id = user.id
     
-    # User ko save bhi kar lo
     save_user(user_chat_id)
 
-    # Agar admin khud message bhej raha hai, toh forward mat karo
     if user_chat_id == ADMIN_ID:
         return
 
@@ -156,7 +205,6 @@ async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         print(f"Error forwarding message: {e}")
 
-# Text, Photo aur Video Broadcast karne ki main logic function
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         await update.message.reply_text("Aapke paas is command ko use karne ki permission nahi hai.")
@@ -232,7 +280,7 @@ def main():
     app.add_handler(CommandHandler("broadcast", broadcast))
     
     app.add_handler(MessageHandler(filters.PHOTO & filters.CaptionRegex(r"^/broadcast"), handle_media_broadcast))
-    app.add_handler(filters.VIDEO & filters.CaptionRegex(r"^/broadcast"), handle_media_broadcast))
+    app.add_handler(MessageHandler(filters.VIDEO & filters.CaptionRegex(r"^/broadcast"), handle_media_broadcast))
     
     app.add_handler(MessageHandler(~filters.COMMAND, forward_to_admin))
     
