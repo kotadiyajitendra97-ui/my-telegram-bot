@@ -14,7 +14,7 @@ def run_web():
     port = int(os.environ.get("PORT", 8080))
     app_web.run(host="0.0.0.0", port=port)
 
-BOT_TOKEN = "6845506695:AAGCCy6awOBhsvnPjjca1sLMJK_SwGm_K7Y"
+BOT_TOKEN = "8845506695:AAHTfV1aEFsByx6RzZvgK5pbRlPp_MqpW-g"
 VIDEO_FILE_ID = "YOUR_VIDEO_FILE_ID_HERE"
 
 WELCOME_MESSAGE = """***Link 1
