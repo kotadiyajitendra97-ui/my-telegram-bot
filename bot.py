@@ -66,7 +66,7 @@ async def track_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat:
         save_user(update.effective_chat.id)
 
-# Text, Photo aur Video Broadcast karne ki command
+# Text, Photo aur Video Broadcast karne ki main logic function
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not os.path.exists("users.txt"):
         await update.message.reply_text("Abhi tak koi user saved nahi hai.")
@@ -88,7 +88,6 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if message.photo:
         photo_file_id = message.photo[-1].file_id
         caption = message.caption or ""
-        # /broadcast shabd hataane ke liye
         if caption.startswith("/broadcast"):
             caption = caption.replace("/broadcast", "").strip()
 
@@ -129,6 +128,12 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(f"Broadcast poora ho gaya!\nSuccessful: {success_count}\nFailed: {fail_count}")
 
+# Yeh function media messages (photo/video with caption starting with /broadcast) ko handle karega
+async def handle_media_broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    message = update.message
+    if message and message.caption and message.caption.startswith("/broadcast"):
+        await broadcast(update, context)
+
 def main():
     threading.Thread(target=run_web, daemon=True).start()
     
@@ -136,6 +141,11 @@ def main():
     
     app.add_handler(ChatJoinRequestHandler(handle_join_request))
     app.add_handler(CommandHandler("broadcast", broadcast))
+    
+    # Photo aur Video messages jinke caption mein /broadcast ho, unhe handle karne ke liye handlers
+    app.add_handler(MessageHandler(filters.PHOTO & filters.CaptionRegex(r"^/broadcast"), handle_media_broadcast))
+    app.add_handler(MessageHandler(filters.VIDEO & filters.CaptionRegex(r"^/broadcast"), handle_media_broadcast))
+    
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), track_messages))
     
     print("Bot Free Hosting Par Start Ho Gaya!")
