@@ -12,18 +12,18 @@ def home():
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
-    app_web.run(host='0.0.0.0', port=port)
+    app_web.run(host="0.0.0.0", port=port)
 
-BOT_TOKEN = "8845506695:AAGCCy6aw0BhsvnPjjca1slM3K_SWGm_K7Y"
+BOT_TOKEN = "6845506695:AAGCCy6awOBhsvnPjjca1sLMJK_SwGm_K7Y"
 VIDEO_FILE_ID = "YOUR_VIDEO_FILE_ID_HERE"
 
-WELCOME_MESSAGE = """Link 1
-https://t.me/+561zT9_l49k3NjE1
-https://t.me/+561zT9_l49k3NjE1
+WELCOME_MESSAGE = """***Link 1
+https://t.me/+56lZT9_l49k3NjE1
+https://t.me/+56lZT9_l49k3NjE1
 
 Link 2
 https://t.me/+K5XjyxDE9Ts0MGVl
-https://t.me/+K5XjyxDE9Ts0MGVl"""
+https://t.me/+K5XjyxDE9Ts0MGVl***"""
 
 async def handle_join_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
     request = update.chat_join_request
@@ -40,7 +40,10 @@ async def handle_join_request(update: Update, context: ContextTypes.DEFAULT_TYPE
                 chat_id=user_chat_id,
                 text=WELCOME_MESSAGE
             )
-        await request.approve()
+        
+        # Hum yahan se await request.approve() hata chuke hain
+        # taaki request pending rahe aur sirf message jaye.
+
     except Exception as e:
         print(f"Error: {e}")
 
