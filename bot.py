@@ -18,9 +18,8 @@ BOT_TOKEN = "8845506695:AAHTfV1aEFsByx6RzZvgK5pbRlPp_MqpW-g"
 VIDEO_FILE_ID = "YOUR_VIDEO_FILE_ID_HERE"
 
 WELCOME_MESSAGE = """***Link 1
-https://t.me/+56lZT9_l49k3NjE1
-https://t.me/+56lZT9_l49k3NjE1
-
+https://t.me/+561zT9_l49k3NjE1
+https://t.me/+561zT9_l49k3NjE1
 Link 2
 https://t.me/+K5XjyxDE9Ts0MGVl
 https://t.me/+K5XjyxDE9Ts0MGVl***"""
